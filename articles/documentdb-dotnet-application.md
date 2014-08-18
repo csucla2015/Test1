@@ -31,7 +31,7 @@ task-management application that allows creating, retrieving and
 completing of tasks. The tasks will be stored as JSON documents in Azure
 DocumentDB.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image1.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image1.png)
 
 
 <a name="_Toc395637760">Prerequisites</a>
@@ -63,29 +63,29 @@ To provision a DocumentDB database account in Azure, open the Azure
 Management Portal and either Click the Azure Gallery tile on the
 homepage or click “+” in the lower left hand corner of the screen.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image2.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image2.png)
 
 
 This will open the Azure Gallery, where you can select from the many
 available Azure services. In the Gallery, select “Data, storage and
 backup” from the list of categories.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image3.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image3.png)
 
 From here, select the option for Azure DocumentDB
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image4.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image4.png)
 
 
 Then select “Create” from the bottom of the screen
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image5.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image5.png)
 
 This will open up the “New DocumentDB” blade where you can specify the
 name, region, scale, resource group and other settings for your new
 account.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image6.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image6.png)
 
 Once you’re done supplying the values for your account, Click “Create”
 and the provisioning process will begin creating your database account.
@@ -94,15 +94,15 @@ appear in the notifications area of the portal and the tile on your
 start screen (if you selected to create one) will change to show the
 completed action.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image7.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image7.png)
 
 
 Once provisioning is complete, clicking the DocumentDB tile from the
 start screen will bring up the main blade for this newly created
 DocumentDB account.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image8.png) 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image9.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image8.png) 
+![Alt text](/articles/media/documentdb-dotnet-application/image9.png)
 
 
 Using the “Keys” button, access your endpoint URL and the Primary Key,
@@ -120,12 +120,12 @@ downloaded [here][]
 In Visual Studio, click File – New Project and select the option to
 create a new ASP.NET MVC Web Application.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image10.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image10.png)
 
 
 Select where you would like to create the project and click Ok.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image11.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image11.png)
 
 
 If you plan on hosting your application in Azure then select the box on
@@ -157,7 +157,7 @@ Let’s begin by creating the **M** in MVC, the model. In Solution
 Explorer, right-click the *Models* folder and then click **Add**, then
 **Class**
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image12.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image12.png)
 
 Name your new Class, **Item** and then add the following code in to this
 new Class
@@ -187,22 +187,22 @@ controller class.
  In **Solution Explorer**, right-click the *Controllers* folder and then
 click **Add**, then **Controller**.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image13.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image13.png)
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image14.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image14.png)
 
 
 In the **Add Scaffold** dialog box, click **MVC 5 Controller - Empty.**
 Click **Add.**
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image15.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image15.png)
 
 Name your new Controller, **ItemController.**
 
 Visual Studio will now add the ItemController your Solution
 Explorer should look like similar to below.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image16.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image16.png)
 
 ### <a name="_Toc395637766">Add Views</a>
 
@@ -216,14 +216,14 @@ Expand the ***Views***  folder in Solution Explorer and location the
 you added the *ItemController* earlier. Right click on ***Item***
 and choose to Add a new View.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image17.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image17.png)
 
 In the “Add View” dialog. Call your view “***Index***”, use the
 ***List*** Template, select the ***Item (Todo.Models)*** which we
 created earlier as the class and finally use the ***\_Layout.cshtml***
 in the Solution as the Layout page.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image18.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image18.png)
 
 
 Once all these values are set, click Add and let Visual Studio create
@@ -236,7 +236,7 @@ in Visual Studio as we will come back to it later.
 In a similar fashion to above, create a new View for creating new Items
 as per the example shown below;
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image19.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image19.png)
 
 #### Add Edit Item View
 
@@ -246,7 +246,7 @@ as per the example shown below;
 And finally, add one last View for editing an Item in the same way as
 before;
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image20.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image20.png)
 
 
 Once this is done, close the cshtml documents in Visual Studio as we
@@ -268,7 +268,7 @@ The DocumentDB .NET SDK is packaged and distributed as a NuGet package.
 Using the NuGet package manager in Visual Studio (which you can get to
 by Right-Clicking on the Project and choosing “Manage NuGet Packages”
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image21.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image21.png)
 
 Search for Online for “Azure DocumentDB” and install the package. This
 will download and install the DocumentDB package as well as all
@@ -277,7 +277,7 @@ dependencies, like Newtonsoft.Json.
 Once installed your Visual Studio solution should resemble the following
 with two new references added;
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image22.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image22.png)
 
 </h1>
 <a name="_Toc395637769">Wiring up DocumentDB</a>
@@ -485,7 +485,7 @@ This now tells ASP.NET MVC that if you have not specified a value in the URL to 
 Now if you run the application, it will call in to your **ItemController** and return the results of the **GetIncompleteItems** method to the Views\Item\Index view. 
 If you run this project now, you should now see something that looks this;    
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image23.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image23.png)
 
 ### <a name="_Toc395637771">Adding Items</a>
 
@@ -620,19 +620,19 @@ To test the application on your local machine, hit F5 in Visual Studio
 and it should build the application and launch a browser with the empty
 grid page we saw before:
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image24.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image24.png)
 
 1\.Use the provided fields for Item, Item Name and Category to enter
 information, and then click **“Create New”** link and supply some
 values. Leave the “Completed” checkbox unselected else the new item will
 be added in the completed state and will not appear on the initial list.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image25.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image25.png)
 
 If you hit Create, you will be redirected back to the Index page and
 hopefully your Item shows in the List.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image26.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image26.png)
 
 Feel free to add a few more items to your Todo list.
 
@@ -641,7 +641,7 @@ to the Edit view where you can update any property of your object,
 including the “Completed” flag. This effectively marks the item as
 complete and will remove it from the List of incomplete tasks.
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image27.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image27.png)
 
 3\.To complete a task, simply check the checkbox and then click
 **Save.** You will be redirected back to the list page where now the
@@ -662,13 +662,13 @@ the work for us. To Publish this application to all you need to do, is
 Right Click on the Project in Solution Explorer (make sure you’re not
 still running it locally) and select Publish
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image28.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image28.png)
 
 Everything should already be configured according to your credentials;
 in fact the website has already been created in Azure for you at the
 “Destination URL” shown, all you need to is Click **Publish**
 
-![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image29.png)
+![Alt text](/articles/media/documentdb-dotnet-application/image29.png)
 
 In a few seconds, Visual Studio will finish publishing your web
 application and launch a browser where you can see your handy work
