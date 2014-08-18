@@ -618,13 +618,19 @@ To test the application on your local machine, hit F5 in Visual Studio
 and it should build the application and launch a browser with the empty
 grid page we saw before:
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image24.png)
+
 1\.Use the provided fields for Item, Item Name and Category to enter
 information, and then click **“Create New”** link and supply some
 values. Leave the “Completed” checkbox unselected else the new item will
 be added in the completed state and will not appear on the initial list.
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image25.png)
+
 If you hit Create, you will be redirected back to the Index page and
 hopefully your Item shows in the List.
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image26.png)
 
 Feel free to add a few more items to your Todo list.
 
@@ -632,6 +638,8 @@ Feel free to add a few more items to your Todo list.
 to the Edit view where you can update any property of your object,
 including the “Completed” flag. This effectively marks the item as
 complete and will remove it from the List of incomplete tasks.
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image27.png)
 
 3\.To complete a task, simply check the checkbox and then click
 **Save.** You will be redirected back to the list page where now the
@@ -652,9 +660,13 @@ the work for us. To Publish this application to all you need to do, is
 Right Click on the Project in Solution Explorer (make sure you’re not
 still running it locally) and select Publish
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image28.png)
+
 Everything should already be configured according to your credentials;
 in fact the website has already been created in Azure for you at the
 “Destination URL” shown, all you need to is Click **Publish**
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image29.png)
 
 In a few seconds, Visual Studio will finish publishing your web
 application and launch a browser where you can see your handy work
