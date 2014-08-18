@@ -21,6 +21,9 @@ task-management application that allows creating, retrieving and
 completing of tasks. The tasks will be stored as JSON documents in Azure
 DocumentDB.
 
+![Alt text](/articles/media/documentdb-nodejs-application/image1.png)
+
+
 <a name="_Toc395783176">Prerequisites</a>
 -----------------------------------------
 
@@ -42,11 +45,64 @@ and run Node.js directly on whichever platform you choose in the way you
 would normally run Node.js projects and then use the Azure CLI tools to
 deploy your application to Azure Websites
 
+<a name="_Toc395637761">Create a DocumentDB database account</a>
+================================================================
 
+To provision a DocumentDB database account in Azure, open the Azure
+Management Portal and either Click the Azure Gallery tile on the
+homepage or click “+” in the lower left hand corner of the screen.
+
+![Alt text](/articles/media/documentdb-nodejs-application/image2.png)
+
+
+This will open the Azure Gallery, where you can select from the many
+available Azure services. In the Gallery, select “Data, storage and
+backup” from the list of categories.
+
+![Alt text](/articles/media/documentdb-nodejs-application/image3.png)
+
+From here, select the option for Azure DocumentDB
+
+![Alt text](/articles/media/documentdb-nodejs-application/image4.png)
+
+
+Then select “Create” from the bottom of the screen
+
+![Alt text](/articles/media/documentdb-nodejs-application/image5.png)
+
+This will open up the “New DocumentDB” blade where you can specify the
+name, region, scale, resource group and other settings for your new
+account.
+
+![Alt text](/articles/media/documentdb-nodejs-application/image6.png)
+
+Once you’re done supplying the values for your account, Click “Create”
+and the provisioning process will begin creating your database account.
+Once the provisioning process is complete you should see a notification
+appear in the notifications area of the portal and the tile on your
+start screen (if you selected to create one) will change to show the
+completed action.
+
+![Alt text](/articles/media/documentdb-nodejs-application/image7.png)
+
+
+Once provisioning is complete, clicking the DocumentDB tile from the
+start screen will bring up the main blade for this newly created
+DocumentDB account.
+
+![Alt text](/articles/media/documentdb-nodejs-application/image8.png) 
+![Alt text](/articles/media/documentdb-nodejs-application/image9.png)
+
+
+Using the “Keys” button, access your endpoint URL and the Primary Key,
+copy these to your clipboard and keep them handy as we will use these
+values in the web application we will use these values in the web application we will create next.
 
 <h2><a name="_Toc395783178">Create a new Node.js application</a></h2>
 
 <p>In Visual Studio, select File – New Project and Select to create a “Basic Microsoft Azure Express Application”</p>
+
+![Alt text](/articles/media/documentdb-nodejs-application/image10.png)
 
 This will create a basic Express application for you. If you get
 prompted to “install dependencies” select “Yes”. This will install all
@@ -55,11 +111,15 @@ the npm packages that are required for a new Express application.
 Once this is complete the Solution Explorer should resemble the
 following;
 
+![Alt text](/articles/media/documentdb-nodejs-application/image11.png)
+
 This shows you that you have Express, Jade and Stylus installed.
 
 If you hit F5 in Visual Studio it should build the project, start
 Node.js, and display a browser with the Express equivalent of “Hello
 World”
+
+![Alt text](/articles/media/documentdb-nodejs-application/image12.png)
 
 <a name="_Toc395783179">Install additional modules</a>
 ------------------------------------------------------
@@ -70,14 +130,22 @@ required for an Express application. Later, when you deploy this
 application to an Azure Web Site, this file will be used to determine
 which modules need to be installed on Azure to support your application.
 
+![Alt text](/articles/media/documentdb-nodejs-application/image13.png)
+
 We need to install two more packages for this tutorial.
 
 Right click on “npm” in the Solution Explorer and select “Install npm
 Packages”
 
+![Alt text](/articles/media/documentdb-nodejs-application/image14.png)
+
+
 In the “Install New npm Packages” dialog, type **nconf** to search for
 the module. This module will be used by the application to read the
 database configuration values from a configuration file.
+
+![Alt text](/articles/media/documentdb-nodejs-application/image15.png)
+
 
 Finally, install the Azure DocumentDB module in the same way by search
 for **documentdb**. This is the module where all the DocumentDB magic
@@ -87,12 +155,16 @@ Once you have installed these two additional modules, and their
 dependencies, they should show up in Solution Explorer under the **npm**
 modules.
 
+![Alt text](/articles/media/documentdb-nodejs-application/image16.png)
+
 A quick check of the **package.json** file of the application should
 show the additional modules, This file will tell Azure later which
 packages it need to be download and installed when running your
 application.
 
 Edit the package.json file, if required, to resemble the example below.
+
+![Alt text](/articles/media/documentdb-nodejs-application/image17.png)
 
 This tells Node (and Azure later) that your application depends on these
 additional modules.
@@ -403,13 +475,18 @@ To test the application on your local machine, hit F5 in Visual Studio
 and it should build the app, start Node.js and launch a browser with a
 page that looks like the image below:
 
+![Alt text](/articles/media/documentdb-nodejs-application/image18.png)
+
+
 1\. Use the provided fields for Item, Item Name and Category to enter
 information, and then click **Add Item**.
 
 2\. The page should update to display the newly created item in the ToDo
 List.
 
-1\. To complete a task, simply check the checkbox in the Complete column,
+![Alt text](/articles/media/documentdb-nodejs-application/image19.png)
+
+3\. To complete a task, simply check the checkbox in the Complete column,
 and then click **Update tasks**
 
 </h1>
@@ -421,11 +498,15 @@ Websites is easily accomplished in a few short steps.
 
 Right click on your project and select “Publish”
 
+![Alt text](/articles/media/documentdb-nodejs-application/image20.png)
+
 Then follow the publish wizard to provide the required configuration for
 your Azure Website. The wizard will let you either choose an existing
 website to update, or to create a new website.
 
 Once you have supplied the necessary configuration just hit “Publish”
+
+![Alt text](/articles/media/documentdb-nodejs-application/image21.png)
 
 Then follow the publish wizard to provide the required configuration for
 your Azure Website. The wizard will let you either choose an existing
