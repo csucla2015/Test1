@@ -104,13 +104,30 @@ additional modules.
 To start, edit <b>app.js</b> located in the root of the Express application we just created. <br />
 Locate the following lines in the file;</p>
 
+    app.get('/', routes.index);
+    app.get('/users', user.list);
+
+
 <p>And replace with the following two lines;</p>
+
+    app.get('/', routes.index);
+    app.post('/', routes.createOrUpdateItem);
+
 
 <p>This tells the application what to do with the default GET and POST methods on a Form we will create next.</p>
 
 <p>Now locate the <b>index.js</b> file found under the <b>routes</b> folder. Open this in your editor and delete all code found in this file.</p>
 
 <p>Add the following at the top of the file;</p>
+
+    // import the modules we will use
+    var DocumentDBClient = require('documentdb').DocumentClient
+      , nconf = require('nconf');
+    
+    // tell nconf which config file to use
+    nconf.env()
+    nconf.file({ file: 'config.json' });
+
 
 <p>This defines the modules that we are going to make use of; which are <b>documentdb</b> and <b>nconf</b>.</p>
 
@@ -120,13 +137,179 @@ Locate the following lines in the file;</p>
 
 <p>Open this new <b>config.json</b> file and enter in the following values as appropriate for your DocumentDB endpoint. Be sure to set HOST and MASTER_KEY values correctly.</p>
 
+    {
+	    "HOST"  	: "<insert your DocDB endpoint here>",
+	    "AUTH_KEY"  	: "<insert either primary or secondary key here>",
+	    "DATABASE"	: "ToDoList",
+	    "COLLECTION"   	: "Items"
+    }
+
+
 <p>Now, switching back to <b>index.js</b>, add the following lines after the last lines to actually go read the configuration file and store the values in page level variables.</p>
+      
+    var host = nconf.get("HOST");
+    var authKey = nconf.get("AUTH_KEY");
+    var databaseId = nconf.get("DATABASE");
+    var collectionId = nconf.get("COLLECTION");
+    
+
 
 <p>Now that this is done, continue adding the following code to <b>index.js</b></p>
+
+    // create some global variables which we will use later to hold instances of the DocumentDBClient, Database and Collection
+    var client;
+    	exports.index = function (req, res) {
+    		// create an instance of the DocumentDB client
+    		client = new DocumentDBClient(host, { masterKey: authKey });
+    
+    		// before we can query for Items in the document store, we need to ensure we 
+    		// have a database with a collection then use the collection to read the documents
+    		readOrCreateDatabase(function (database) {
+   				 readOrCreateCollection(database, function (collection) {
+    
+   					 listItems(collection, function (items) {
+   						 res.render('index', { title: 'My ToDo List', tasks: items });
+    				});
+    
+   			 });
+    	});
+    };
+	exports.createOrUpdateItem = function (req, res) {
+    //first have to set the database & collection context so that we have the self links   
+    readOrCreateDatabase(function (database) {
+        readOrCreateCollection(database, function (collection) {
+            
+            //if we find an item on the form, we'll create it in the database
+            var item = req.body.item;
+            if (item) {
+                createItem(collection, item, function () {
+                    res.redirect('/');
+                });
+
+            //else let's look for items marked as completed, 
+            //and update that item in the database
+            } else {
+                var completed = req.body.completed;
+                
+                //check if completed is actually an Array, if not make it one. 
+                //this happens when you select only one item            
+                if (!completed.forEach)
+                    completed = [completed];
+                
+                //use a recursive function to loop through items in 
+                //array calling updateItem each time through                                    
+                function updater(i) {
+                    if (i < completed.length) {
+                        updateItem(collection, completed[i], function () {
+                            updater(i + 1);
+                        });
+                    } else {
+                        res.redirect('/');
+                    }
+                }
+                
+                //kick off the recursion
+                updater(0);
+            }
+
+        });
+   	 });
+	}
+
 
 <p>These are the two functions that we told the application to use earlier in the <b>app.js</b> when we defined the routes. When a GET hits the index view, the <b>exports.index</b> function will be run and similarly when a POST is received by the index view the <b>exports.createOfUpdateItem</b> function will be run.</p>
 
 <p>These two functions do all the work of the application that we’re building however they call out to other functions, purely to make the code more readable and easier to follow. Continue adding the following code to the <b>index.js</b> file. This contains all the methods used by the two functions above and contain all the calls to DocumentDB. We will walkthrough each function in high-level detail later.</p>
+
+    // update item
+	var updateItem = function (collection, itemId, callback) {
+	    //first fetch the document based on the id
+	    getItem(collection, itemId, function (doc) {
+	        //now replace the document with the updated one
+	        doc.completed = true;
+	        client.replaceDocument(doc._self, doc, function (err, replacedDoc) {
+	            if (err) {
+	                throw (err);
+	            }
+	            
+	            callback();
+	        });
+	    });
+	}
+	
+	// get item
+	var getItem = function (collection, itemId, callback) {      
+	    client.queryDocuments(collection._self, 'SELECT * FROM root r WHERE r.id="' + itemId + '"').toArray(function (err, results) {
+	        if (err) {
+	            throw (err);
+	        }
+	
+	        callback(results[0]);
+	    });
+	}
+	
+	// create new item
+	var createItem = function (collection, documentDefinition, callback) {
+	    documentDefinition.completed = false;
+	    client.createDocument(collection._self, documentDefinition, function (err, doc) {
+	        if (err) {
+	            throw (err);
+	        }
+	        
+	        callback();
+	    });
+	}
+	
+	// query the provided collection for all non-complete items
+	var listItems = function (collection, callback) {
+	    client.queryDocuments(collection._self, 'SELECT * FROM root r WHERE r.completed=false').toArray(function (err, docs) {
+	        if (err) {
+	            throw (err);
+	        }
+	        
+	        callback(docs);
+	    });
+	}
+	
+	// if the database does not exist, then create it, else return the database object
+	var readOrCreateDatabase = function (callback) {
+	    client.queryDatabases('SELECT * FROM root r WHERE r.id="' + databaseId + '"').toArray(function (err, results) {
+	        if (err) {
+	            // some error occured, rethrow up
+	            throw (err);
+	        }
+	        if (!err && results.length === 0) {
+	            // no error occured, but there were no results returned 
+	            // indicating no database exists matching the query            
+	            client.createDatabase({ id: databaseId }, function (err, createdDatabase) {
+	                callback(createdDatabase);
+	            });
+	        } else {
+	            // we found a database
+	            callback(results[0]);
+	        }
+	    });
+	};
+	
+	// if the collection does not exist for the database provided, create it, else return the collection object
+	var readOrCreateCollection = function (database, callback) {
+	    client.queryCollections(database._self, 'SELECT * FROM root r WHERE r.id="' + collectionId + '"').toArray(function (err, results) {
+	        if (err) {
+	            // some error occured, rethrow up
+	            throw (err);
+	        }
+	        if (!err && results.length === 0) {
+	            // no error occured, but there were no results returned 
+	            //indicating no collection exists in the provided database matching the query
+	            client.createCollection(database._self, { id: collectionId }, function (err, createdCollection) {
+	                callback(createdCollection);
+	            });
+	        } else {
+	            // we found a collection
+	            callback(results[0]);
+	        }
+	    });
+	};
 
 <p><b>updateItem</b> – updates a document in the database based on the Item ID passed in from the form. It uses this ID to execute a <b><i>readDocument</i></b> method against DocumentDB to read the specific document we have stored. It then changes the “completed” attribute of the document to true, indicating it is now complete, and then proceeds to replace the document in the database. </p>
 
@@ -145,10 +328,55 @@ Locate the following lines in the file;</p>
 <p>Now let’s turn our attention to building the user interface so a user can actually interact with our application. The Express application we created uses <b>Jade</b> as the view engine. For more information on Jade please refer to <a href="http://jade-lang.com/">http://jade-lang.com/</a></p>
 
 <p>Open the <b>layout.jade </b>filefound in the <b>views</b> folder and replace the contents with the following;</p>
+	
+	doctype html
+	html
+	  head
+	    title= title
+	    meta(http-equiv='X-UA-Compatible', content='IE=10')
+	    link(rel='stylesheet', href='/stylesheets/style.css')
+	    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+	  body.app
+	    nav.navbar.navbar-fixed-top
+	      div.navbar-inner
+	        container
+	            a.brand(href='/') My Tasks
+	    block content
 
 <p>This effectively tells the <b>Jade</b> engine to render some HTML for our application and creates a “<b>block</b>” called “<b>content</b>” where we can supply the layout for our content pages.</p>
 
 <p>Now open the <b>index.jade </b>file, the view associated with index.js and replace the content with the following; </p>
+
+	extends layout
+	
+	block content
+	  h1= title
+	  br
+	
+	  form(action="/", method="post")
+	    table.table.table-striped.table-bordered
+	      tr
+	        td Name
+	        td Category
+	        td Complete
+	      each task in tasks
+	        tr
+	            td #{task.name}
+	            td #{task.category}
+	            td 
+	                input(type="checkbox", name="completed", value="#{task.id}", checked=(task.completed == true))
+	    button.btn(type="submit") Update tasks
+	
+	  hr
+	
+	  form.well(action="/", method="post")
+	    label Item Name:  
+	    input(name="item[name]", type="textbox")
+	    label Item Category: 
+	    input(name="item[category]", type="textbox")
+	    br
+	    button.btn(type="submit") Add item
+
 
 This extends layout, and provides content for the “block content”
 placeholder we saw in the layout.jade file earlier.
