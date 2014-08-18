@@ -29,8 +29,11 @@ task-management application that allows creating, retrieving and
 completing of tasks. The tasks will be stored as JSON documents in Azure
 DocumentDB.
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image1.png)
+
+
 <a name="_Toc395637760">Prerequisites</a>
------------------------------------------
+================================================================
 
 Before following the instructions in this article, you should ensure
 that you have the following installed:
@@ -58,17 +61,29 @@ To provision a DocumentDB database account in Azure, open the Azure
 Management Portal and either Click the Azure Gallery tile on the
 homepage or click “+” in the lower left hand corner of the screen.
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image2.png)
+
+
 This will open the Azure Gallery, where you can select from the many
 available Azure services. In the Gallery, select “Data, storage and
 backup” from the list of categories.
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image3.png)
+
 From here, select the option for Azure DocumentDB
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image4.png)
+
+
 Then select “Create” from the bottom of the screen
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image5.png)
 
 This will open up the “New DocumentDB” blade where you can specify the
 name, region, scale, resource group and other settings for your new
 account.
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image6.png)
 
 Once you’re done supplying the values for your account, Click “Create”
 and the provisioning process will begin creating your database account.
@@ -77,9 +92,16 @@ appear in the notifications area of the portal and the tile on your
 start screen (if you selected to create one) will change to show the
 completed action.
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image7.png)
+
+
 Once provisioning is complete, clicking the DocumentDB tile from the
 start screen will bring up the main blade for this newly created
 DocumentDB account.
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image8.png) 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image9.png)
+
 
 Using the “Keys” button, access your endpoint URL and the Primary Key,
 copy these to your clipboard and keep them handy as we will use these
@@ -96,7 +118,13 @@ downloaded [here][]
 In Visual Studio, click File – New Project and select the option to
 create a new ASP.NET MVC Web Application.
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image10.png)
+
+
 Select where you would like to create the project and click Ok.
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image11.png)
+
 
 If you plan on hosting your application in Azure then select the box on
 the lower right to “Host in the cloud”. We’ve selected to host in the
@@ -127,6 +155,8 @@ Let’s begin by creating the **M** in MVC, the model. In Solution
 Explorer, right-click the *Models* folder and then click **Add**, then
 **Class**
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image12.png)
+
 Name your new Class, **Item** and then add the following code in to this
 new Class
 
@@ -155,13 +185,22 @@ controller class.
  In **Solution Explorer**, right-click the *Controllers* folder and then
 click **Add**, then **Controller**.
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image13.png)
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image14.png)
+
+
 In the **Add Scaffold** dialog box, click **MVC 5 Controller - Empty.**
 Click **Add.**
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image15.png)
 
 Name your new Controller, **ItemController.**
 
 Visual Studio will now add the ItemController your Solution
 Explorer should look like similar to below.
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image16.png)
 
 ### <a name="_Toc395637766">Add Views</a>
 
@@ -175,10 +214,15 @@ Expand the ***Views***  folder in Solution Explorer and location the
 you added the *ItemController* earlier. Right click on ***Item***
 and choose to Add a new View.
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image17.png)
+
 In the “Add View” dialog. Call your view “***Index***”, use the
 ***List*** Template, select the ***Item (Todo.Models)*** which we
 created earlier as the class and finally use the ***\_Layout.cshtml***
 in the Solution as the Layout page.
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image18.png)
+
 
 Once all these values are set, click Add and let Visual Studio create
 your view for you. Visual Studio will create a template view. Once it is
@@ -190,6 +234,8 @@ in Visual Studio as we will come back to it later.
 In a similar fashion to above, create a new View for creating new Items
 as per the example shown below;
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image19.png)
+
 #### Add Edit Item View
 
 <a name="_Toc395888515"></a>
@@ -197,6 +243,9 @@ as per the example shown below;
 
 And finally, add one last View for editing an Item in the same way as
 before;
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image20.png)
+
 
 Once this is done, close the cshtml documents in Visual Studio as we
 will return to these Views later.
@@ -217,12 +266,16 @@ The DocumentDB .NET SDK is packaged and distributed as a NuGet package.
 Using the NuGet package manager in Visual Studio (which you can get to
 by Right-Clicking on the Project and choosing “Manage NuGet Packages”
 
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image21.png)
+
 Search for Online for “Azure DocumentDB” and install the package. This
 will download and install the DocumentDB package as well as all
 dependencies, like Newtonsoft.Json.
 
 Once installed your Visual Studio solution should resemble the following
 with two new references added;
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image22.png)
 
 </h1>
 <a name="_Toc395637769">Wiring up DocumentDB</a>
@@ -425,6 +478,12 @@ Open ***RouteConfig.cs*** under the App\_Start folder, locate the line
 starting with “defaults:” and change it to resemble the following;
 
     defaults: new { controller = "Item", action = "Index", id = UrlParameter.Optional }
+
+This now tells ASP.NET MVC that if you have not specified a value in the URL to control the routing behavior that instead of “Home” use “Item” as the controller and user Index as the view.
+Now if you run the application, it will call in to your **ItemController** and return the results of the **GetIncompleteItems** method to the Views\Item\Index view. 
+If you run this project now, you should now see something that looks this;    
+
+![Alt text](/articles/media/documentdb-dotnet-sampleapplication/image23.png)
 
 ### <a name="_Toc395637771">Adding Items</a>
 
