@@ -183,7 +183,7 @@ creating three Boolean fields which will be toggled based on user input.
 <a name="_Toc395888520"></a>
 ============================
 
-Create Database, Collection and Document
+### <a name="_Toc395809338">Create Database, Collection and Document</a>
 
 \#Note : It is considered safer to keep your authentication credentials
 in a config file rather than your app. For simplicity purposes we are
