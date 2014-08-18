@@ -311,11 +311,11 @@ And replace the code in the class file with the following;
     {
 	    public static async Task<List<Item>> GetIncompleteItems()
 	    {
-	    return await Task<List<Item>>.Run( () => 
-	    	Client.CreateDocumentQuery<Item>(Collection.DocumentsLink)
-	    		.Where(d => d.Completed == false)
-	    		.AsEnumerable()
-	    		.ToList<Item>());
+	    	return await Task<List<Item>>.Run( () => 
+	    		Client.CreateDocumentQuery<Item>(Collection.DocumentsLink)
+		    		.Where(d => d.Completed == false)
+		    		.AsEnumerable()
+		    		.ToList<Item>());
 	    }
     } 
 
@@ -399,10 +399,10 @@ below to your repository class;
             {
                 if (client == null)
                 {
-      				String endpoint = ConfigurationManager.GetSetting("endpoint")
-                    string authKey = CloudConfigurationManager.GetSetting("authKey");
-                    Uri endpointUri = new Uri(endpoint);
-                    client = new DocumentClient(endpointUri, authKey);
+	      		String endpoint = ConfigurationManager.GetSetting("endpoint")
+	            	string authKey = CloudConfigurationManager.GetSetting("authKey");
+	        	Uri endpointUri = new Uri(endpoint);
+	            	client = new DocumentClient(endpointUri, authKey);
                 }
                 return client;
             }
@@ -436,7 +436,7 @@ below to your repository class;
             }
             else
             {
-		  		Database database = new Database { Name = DatabaseName };	
+		Database database = new Database { Name = DatabaseName };	
                 database = await Client.CreateDatabaseAsync(database);
             }
         }
@@ -512,11 +512,11 @@ do with a form POST for this controller.
     [HttpPost]  
     public async Task\<ActionResult\> Create(Item item)  
     {
-	    if (ModelState.IsValid)  
-	    {  
-		    await repo.CreateDocument(item);  
-		    return RedirectToAction(“Index”);  
-	    }   
+	if (ModelState.IsValid)  
+	{  
+	    await repo.CreateDocument(item);  
+	    return RedirectToAction(“Index”);  
+	}   
     	return View(item);   
     }
 
@@ -526,7 +526,7 @@ following method to your DocumentDBRepository class.
 
     public static async Task\<Document\> CreateDocument(dynamic item)
     {
-   		 return await Client.CreateDocumentAsync(Collection.SelfLink, item); 
+        return await Client.CreateDocumentAsync(Collection.SelfLink, item); 
     }
 
 This method simply takes any object passed to it and persists it in
@@ -547,24 +547,24 @@ Add the following to the ItemController class;
     public async Task\<ActionResult\> Edit(string id)    
     {  
        	if (id == null)  
-	    {
-	    	return new HttpStatusCodeResult(HttpStatusCode.BadRequest);   
-	    }
+	{
+	    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);   
+	}
     	Item item = await repo.GetDocument(id);
     	if (item == null)
-		{	    
-	    	return HttpNotFound();
-	    }
+        {	    
+	    return HttpNotFound();
+	}
     	return View(item);
     } 
     [HttpPost] 
     public async Task\<ActionResult\> Edit(Item item)  
     {
     	if (ModelState.IsValid)
-		{
-    		await repo.UpdateDocument(item);
-    		return RedirectToAction(“Index”);
-		}
+        {
+    	     await repo.UpdateDocument(item);
+    	     return RedirectToAction(“Index”);
+	}
     	return View(item); 
     }
 
@@ -583,17 +583,17 @@ Add the following to the DocumentDBRepository class;
     public static async Task<Item> GetDocument(string id)
     {
 	    return await Task<Item>.Run(() =>
-	    Client.CreateDocumentQuery<Item>(Collection.DocumentsLink)
-	    .Where(d => d.ID == id)
-	    .AsEnumerable()
-	    .FirstOrDefault());
+	        Client.CreateDocumentQuery<Item>(Collection.DocumentsLink)
+	    		.Where(d => d.ID == id)
+	    		.AsEnumerable()
+			.FirstOrDefault());
     }
     
      
     public static async Task<Document> UpdateDocument(Item item)
     {
     	string docLink = Collection.SelfLink + "docs/" + item.ID;
-   		Document doc = await Client.ReadDocumentAsync(docLink);     
+   	Document doc = await Client.ReadDocumentAsync(docLink);     
         return await Client.ReplaceDocumentAsync(doc.SelfLink, item);
     }
 
